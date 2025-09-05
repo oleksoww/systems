@@ -3,133 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Emulator Mobile</title>
+  <title>Emulator Android/iOS</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      min-height: 100vh;
+      justify-content: center;
+      height: 100vh;
       margin: 0;
-      padding: 20px;
-      background: #f0f0f0;
+      background-color: #f4f4f4;
     }
-
-    h1 {
-      margin-bottom: 20px;
-    }
-
-    .controls {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    select {
-      padding: 5px 10px;
+    select, button {
+      margin: 10px;
+      padding: 10px;
       font-size: 16px;
     }
-
-    .phone {
-      width: 300px;
-      height: 600px;
-      border-radius: 30px;
-      border: 2px solid #333;
-      background: #fff;
-      position: relative;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      color: #fff;
-    }
-
-    /* Android styles */
-    .android {
-      background: linear-gradient(135deg, #a4c639, #7cb342);
-    }
-
-    /* iOS styles */
-    .ios {
-      background: linear-gradient(135deg, #007aff, #00aaff);
-    }
-
-    .version {
-      position: absolute;
-      bottom: 10px;
-      font-size: 18px;
-      opacity: 0.8;
+    iframe {
+      width: 360px;
+      height: 640px;
+      border: none;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <h1>Symulator Systemu Mobile</h1>
-  <div class="controls">
-    <select id="systemSelect">
-      <option value="android">Android</option>
-      <option value="ios">iOS</option>
-    </select>
-    <select id="versionSelect">
-      <option value="11">Android 11</option>
-      <option value="12">Android 12</option>
-      <option value="13">Android 13</option>
-      <option value="18">iOS 18</option>
-      <option value="19">iOS 19</option>
-      <option value="20">iOS 20</option>
-    </select>
-    <button id="runBtn">Uruchom</button>
-  </div>
-
-  <div class="phone" id="phone">
-    Wybierz system
-    <div class="version" id="phoneVersion"></div>
-  </div>
+  <h1>Wybierz system i wersję</h1>
+  <select id="systemSelect">
+    <option value="android">Android</option>
+    <option value="ios">iOS</option>
+  </select>
+  <select id="versionSelect">
+    <option value="11">Android 11</option>
+    <option value="12">Android 12</option>
+    <option value="13">Android 13</option>
+    <option value="18">iOS 18</option>
+    <option value="19">iOS 19</option>
+    <option value="20">iOS 20</option>
+  </select>
+  <button onclick="loadEmulator()">Uruchom emulator</button>
+  <iframe id="emulatorFrame" src="" title="Emulator"></iframe>
 
   <script>
-    const systemSelect = document.getElementById('systemSelect');
-    const versionSelect = document.getElementById('versionSelect');
-    const runBtn = document.getElementById('runBtn');
-    const phone = document.getElementById('phone');
-    const phoneVersion = document.getElementById('phoneVersion');
-
-    // Funkcja zmienia opcje wersji w zależności od systemu
-    systemSelect.addEventListener('change', () => {
-      const system = systemSelect.value;
-      versionSelect.innerHTML = '';
-      if(system === 'android') {
-        ['11','12','13'].forEach(v => {
-          const opt = document.createElement('option');
-          opt.value = v;
-          opt.textContent = `Android ${v}`;
-          versionSelect.appendChild(opt);
-        });
-      } else {
-        ['18','19','20'].forEach(v => {
-          const opt = document.createElement('option');
-          opt.value = v;
-          opt.textContent = `iOS ${v}`;
-          versionSelect.appendChild(opt);
-        });
+    function loadEmulator() {
+      const system = document.getElementById('systemSelect').value;
+      const version = document.getElementById('versionSelect').value;
+      const iframe = document.getElementById('emulatorFrame');
+      
+      let appUrl = '';
+      if (system === 'android') {
+        appUrl = `https://appetize.io/embed/${version}?device=phone&os=android`;
+      } else if (system === 'ios') {
+        appUrl = `https://appetize.io/embed/${version}?device=phone&os=ios`;
       }
-    });
-
-    // Funkcja "uruchamia" system
-    runBtn.addEventListener('click', () => {
-      const system = systemSelect.value;
-      const version = versionSelect.value;
-
-      // Zmień styl telefonu
-      phone.className = 'phone';
-      phone.classList.add(system);
-      phone.textContent = system === 'android' ? 'Android Emulator' : 'iOS Simulator';
-      phoneVersion.textContent = `Wersja: ${version}`;
-    });
-
-    // Inicjalizacja
-    systemSelect.dispatchEvent(new Event('change'));
+      
+      iframe.src = appUrl;
+    }
   </script>
 </body>
 </html>
